@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
           textTheme: ThemeData.light().textTheme.copyWith(title: TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold, fontSize: 18)),
           appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(fontFamily: 'OpenSans', fontSize: 20, fontWeight: FontWeight.bold)),
+                title: TextStyle(fontFamily: 'OpenSans', fontSize: 18, fontWeight: FontWeight.bold), button: TextStyle(color: Colors.white)),
+                
           )),
       home: MyHomePage(),
     );
@@ -45,15 +46,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(String txTitle, double txAmount, DateTime chosenDate) {
     final newTran = Transaction(
         title: txTitle,
         amount: txAmount,
-        date: DateTime.now(),
+        date: chosenDate,
         id: DateTime.now().toString());
 
     setState(() {
       _userTransactions.add(newTran);
+    });
+  }
+
+  void _deleteTransaction(String id){
+    setState(() {
+      _userTransactions.removeWhere((tx) {
+        // Validation ID
+        return tx.id == id;
+      });
     });
   }
 
@@ -92,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // Chart
               Chart(_recentTransactions),
               // Transaction Container
-              TransactionList(_userTransactions)
+              TransactionList(_userTransactions, _deleteTransaction)
             ]),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
